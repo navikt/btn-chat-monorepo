@@ -3,6 +3,9 @@ package no.nav.btnchat.sbs
 
 import io.ktor.application.call
 import io.ktor.auth.authenticate
+import io.ktor.http.content.defaultResource
+import io.ktor.http.content.resources
+import io.ktor.http.content.static
 import io.ktor.response.respond
 import io.ktor.routing.get
 import io.ktor.routing.route
@@ -15,7 +18,7 @@ import org.slf4j.LoggerFactory
 
 val logger = LoggerFactory.getLogger("btn-chat.btn-sbs")
 val bootstrapServers = System.getenv("KAFKA_BOOTSTRAP_SERVERS") ?: "localhost:9092"
-fun main () {
+fun main() {
     HttpServer.create("btn-chat-sbs", 7076) { state ->
         standardAppSetup(state, AuthConfig.UseMock("12345678910"))
         chatModule(
@@ -25,9 +28,11 @@ fun main () {
 
         routing {
             route(state.appname) {
-                get {
-                    call.respond("SBS-app")
+                static {
+                    resources("webapp")
+                    defaultResource("index.html", "webapp")
                 }
+
                 authenticate {
                     route("/api") {
                         get("/test") {

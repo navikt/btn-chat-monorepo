@@ -19,6 +19,7 @@ import java.io.File
 import java.time.Duration
 import java.util.*
 
+val logger = LoggerFactory.getLogger("btn-chat.KafkaUtils")
 data class KafkaCredential(val username: String, val password: String) {
     override fun toString(): String {
         return "username '$username' password '*******'"
@@ -26,7 +27,7 @@ data class KafkaCredential(val username: String, val password: String) {
 }
 
 enum class KafkaChatMessageType {
-    REQUESTED, JOINED, LEAVED, MESSAGE, FORCE_END
+    REQUESTED, JOINED, LEFT, MESSAGE, FORCE_END
 }
 data class KafkaChatMessage(
         val timestamp: Long,
@@ -37,14 +38,14 @@ data class KafkaChatMessage(
 )
 
 private val defaultProducerConfig = Properties().apply {
-    put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, UUIDSerializer::class.java.name)
-    put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JacksonSerializer::class.java.name)
+    put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, UUIDSerializer::class.java)
+    put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JacksonSerializer::class.java)
 }
 
 private val defaultConsumerConfig = Properties().apply {
     put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true")
-    put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, UUIDDeserializer::class.java.name)
-    put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JacksonDeserializer::class.java.name)
+    put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, UUIDDeserializer::class.java)
+    put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JacksonDeserializer::class.java)
     put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
 }
 private val objectmapper = JacksonUtils.objectMapper
@@ -115,7 +116,12 @@ class JacksonSerializer : Serializer<KafkaChatMessage> {
 
 class JacksonDeserializer : Deserializer<KafkaChatMessage?> {
     override fun deserialize(topic: String?, data: ByteArray?): KafkaChatMessage? {
-        return data?.let(objectmapper::readValue)
+        return try {
+            data?.let(objectmapper::readValue)
+        } catch (e: Throwable) {
+            logger.error("Could not deserialize bytearray: $data", e)
+            null
+        }
     }
 }
 

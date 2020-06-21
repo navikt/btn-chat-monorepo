@@ -8,8 +8,14 @@ Start them independently by specifying what service you want to start: `docker-c
 
 After starting kafka one can visit `http://localhost:3030/` to ensure it has started correctly.
    
-Apps can also be started by running `StartFss` and `StartSbs` from you IDE. 
-In these cases you only need to start kafka via docker-compose
+Apps can also be started by running `StartFss` and `StartSbs` from you IDE.
+In these cases you only need to start kafka via docker-compose, but you have to change `ADV_HOST: localhost` for it to work
+
+## Start kafka with no data/topic
+```
+docker-compose rm kafka
+docker-compose up --force-recreate --remove-orphans kafka
+```
 
 # Testing to websocket
 ```javascript
@@ -32,6 +38,7 @@ socket.addEventListener('error', function(e) { console.log('WS error', e); });
 For SBS-app use: `var socket = new WebSocket('ws://localhost:7076/btn-chat-sbs/api/chat/chatId123');`
 
 To send a message: `socket.send('Your message here')`
+
 
 ## Contact us
 Questions related to this service may be asking by creating an issue, or sending an email to one of the following people:

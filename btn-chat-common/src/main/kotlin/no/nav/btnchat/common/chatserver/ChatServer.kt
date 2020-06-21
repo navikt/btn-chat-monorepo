@@ -41,7 +41,7 @@ class ChatServer(private val producer: KafkaProducer<UUID, KafkaChatMessage>) {
                 timestamp = System.currentTimeMillis(),
                 ident = subject,
                 chatId = chatId,
-                type = KafkaChatMessageType.LEAVED
+                type = KafkaChatMessageType.LEFT
         ))
         sessions[chatId]?.remove(session)
         logger.info("[ChatServer::leave] $subject $chatId")

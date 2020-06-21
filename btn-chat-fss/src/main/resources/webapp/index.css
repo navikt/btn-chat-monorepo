@@ -1,0 +1,89 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+}
+html, body, .chatapp {
+    height: 100vh;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.chatapp {
+    display: grid;
+    grid-template-areas: "joinroom" "chatroom" "message";
+    grid-template-columns: 1fr;
+    grid-template-rows: 40px 1fr 40px;
+    grid-gap: 0.5rem;
+    padding: 1rem;
+}
+
+.joinroom-container {
+    grid-area: joinroom;
+    display: flex;
+    align-items: center;
+}
+.joinroom-container input {
+    flex: 1;
+    align-self: normal;
+    font-size: 20px;
+}
+.joinroom-container button {
+    align-self: normal;
+}
+.joinroom-container * {
+    margin: 0 0.125rem;
+}
+.joinroom-container *:first-child {
+    margin-left: 0;
+}
+.joinroom-container *:last-child {
+    margin-right: 0;
+}
+
+.chatroom-container {
+    grid-area: chatroom;
+    display: flex;
+    flex-direction: column;
+}
+.chatroom-container textarea {
+    flex: 1;
+    resize: none;
+}
+
+.message-container {
+    grid-area: message;
+    display: flex;
+    align-items: center;
+}
+.message-container input {
+    flex: 1;
+    align-self: normal;
+    font-size: 20px;
+}
+.message-container button {
+    align-self: normal;
+}
+.message-container * {
+    margin: 0 0.125rem;
+}
+.message-container *:first-child {
+    margin-left: 0;
+}
+.message-container *:last-child {
+    margin-right: 0;
+}
+
+.formelement-label {
+    font-weight: bold;
+}
+
+.code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}

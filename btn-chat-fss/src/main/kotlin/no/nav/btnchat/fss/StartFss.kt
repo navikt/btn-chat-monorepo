@@ -2,6 +2,9 @@ package no.nav.btnchat.fss
 
 import io.ktor.application.call
 import io.ktor.auth.authenticate
+import io.ktor.http.content.defaultResource
+import io.ktor.http.content.resources
+import io.ktor.http.content.static
 import io.ktor.response.respond
 import io.ktor.routing.get
 import io.ktor.routing.route
@@ -24,9 +27,11 @@ fun main() {
 
         routing {
             route(state.appname) {
-                get {
-                    call.respond("FSS-app rebuild")
+                static {
+                    resources("webapp")
+                    defaultResource("index.html", "webapp")
                 }
+
                 authenticate {
                     route("/api") {
                         get("/test") {

@@ -1,0 +1,37 @@
+version: '3.4'
+services:
+  kafka:
+    image: lensesio/fast-data-dev:latest
+    ports:
+      - 2181:2181
+      - 3030:3030
+      - 8081-8083:8081-8083
+      - 9581-9585:9581-9585
+      - 9092:9092
+    environment:
+      ADV_HOST: kafka
+      SAMPLEDATA: 0
+      RUNNING_SAMPLEDATA: 0
+      RUNTESTS: 0
+  fss:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      network: host
+      args:
+        APPNAMEPATH: btn-chat-fss
+    ports:
+      - 7075:7075
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+  sbs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      network: host
+      args:
+        APPNAMEPATH: btn-chat-sbs
+    ports:
+      - 7076:7076
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092

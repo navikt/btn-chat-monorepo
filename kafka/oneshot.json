@@ -1,0 +1,42 @@
+{
+  "topics": [
+    {
+      "topicName": "privat-btn-chat-ws",
+      "numPartitions": 3,
+      "members": [
+        {
+          "member": "srvbtn-chat",
+          "role": "PRODUCER"
+        },
+        {
+          "member": "srvbtn-chat",
+          "role": "CONSUMER"
+        },
+        {
+          "member": "srvbtn-chat-fss",
+          "role": "PRODUCER"
+        },
+        {
+          "member": "srvbtn-chat-fss",
+          "role": "CONSUMER"
+        },
+        {
+          "member": "U143410",
+          "role": "MANAGER"
+        },
+        {
+          "member": "N139039",
+          "role": "MANAGER"
+        },
+        {
+          "member": "B157026",
+          "role": "MANAGER"
+        },
+        {
+          "member": "T145840",
+          "role": "MANAGER"
+        }
+      ]
+    }
+  ]
+}

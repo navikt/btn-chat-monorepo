@@ -2,12 +2,11 @@ name: FSS Build
 
 on:
   push:
-    paths:
-      - 'btn-chat-common/**'
-      - 'btn-chat-sbs/**'
     paths-ignore:
       - 'btn-chat-fss/**'
       - '**.md'
+      - 'docker-compose.yml'
+      - 'Dockerfile-compose'
       - '.gitignore'
       - 'LICENSE'
       - 'CODEOWNERS'

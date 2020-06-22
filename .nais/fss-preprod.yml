@@ -1,0 +1,49 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: btn-chat-fss
+  namespace: default
+  labels:
+    team: personoversikt
+spec:
+  image: {{image}}
+  port: 7070
+  team: personoversikt
+  liveness:
+    path: /btn-chat-fss/internal/isAlive
+    initialDelay: 20
+    timeout: 1
+    periodSeconds: 5
+    failureThreshold: 10
+  readiness:
+    path: /btn-chat-fss/internal/isReady
+    initialDelay: 20
+    timeout: 1
+  prometheus:
+    enabled: true
+    path: /btn-chat-fss/internal/metrics
+  resources:
+    requests:
+      cpu: 50m
+      memory: 256Mi
+    limits:
+      cpu: 2000m
+      memory: 512Mi
+  ingresses:
+    - https://btn-chat-fss.nais.preprod.local
+    - https://app-q0.adeo.no/btn-chat-fss
+    - https://app-q1.adeo.no/btn-chat-fss
+    - https://app-q6.adeo.no/btn-chat-fss
+  replicas:
+    min: 2
+    max: 2
+    cpuThresholdPercentage: 90
+  env:
+    - name: ISSO_JWKS_URL
+      value: "https://isso-q.adeo.no/isso/oauth2/connect/jwk_uri"
+    - name: ISSO_ISSUER
+      value: "https://isso-q.adeo.no:443/isso/oauth2"
+    - name: KAFKA_BROKERS_URL
+      value: "b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443"
+    - name: ENABLED_KAFKA
+      value: "false"

@@ -27,7 +27,7 @@ data class KafkaCredential(val username: String, val password: String) {
 }
 
 enum class KafkaChatMessageType {
-    REQUESTED, JOINED, LEFT, MESSAGE, FORCE_END
+    REQUESTED, JOINED, LEFT, MESSAGE, FORCE_END, DESERIALIZER_ERROR
 }
 data class KafkaChatMessage(
         val timestamp: Long,

@@ -37,17 +37,17 @@ dependencies {
     implementation("io.prometheus:simpleclient_dropwizard:$prometheusVersion")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
-    implementation("no.nav:vault-jdbc:1.3.1")
-    implementation("org.flywaydb:flyway-core:6.3.1")
-    implementation("com.github.seratch:kotliquery:1.3.0")
-    implementation("com.natpryce:konfig:$konfigVersion")
+//    implementation("no.nav:vault-jdbc:1.3.1")
+//    implementation("org.flywaydb:flyway-core:6.3.1")
+//    implementation("com.github.seratch:kotliquery:1.3.0")
+//    implementation("com.natpryce:konfig:$konfigVersion")
     implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
     implementation(project(":btn-chat-common"))
 
     testRuntimeOnly("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
-    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
-    testImplementation("org.testcontainers:postgresql:1.14.1")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
+//    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
+//    testImplementation("org.testcontainers:postgresql:1.14.1")
+//    testImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
 }
 
 repositories {

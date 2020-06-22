@@ -1,0 +1,58 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: btn-chat-sbs
+  namespace: default
+  labels:
+    team: personoversikt
+spec:
+  image: {{image}}
+  port: 7070
+  team: personoversikt
+  liveness:
+    path: /btn-chat-sbs/internal/isAlive
+    initialDelay: 20
+    timeout: 1
+    periodSeconds: 5
+    failureThreshold: 10
+  readiness:
+    path: /btn-chat-sbs/internal/isReady
+    initialDelay: 20
+    timeout: 1
+  prometheus:
+    enabled: true
+    path: /btn-chat-sbs/internal/metrics
+  resources:
+    requests:
+      cpu: 50m
+      memory: 256Mi
+    limits:
+      cpu: 2000m
+      memory: 512Mi
+  ingresses:
+    - https://btn-chat-sbs-q.nav.no
+    - https://btn-chat-sbs-q0.nais.oera-q.local
+    - https://tjenester-q0.nav.no/btn-chat-sbs
+    - https://btn-chat-sbs-q1.nav.no
+    - https://btn-chat-sbs-q1.nais.oera-q.local
+    - https://tjenester-q1.nav.no/btn-chat-sbs
+    - https://btn-chat-sbs-q6.nav.no
+    - https://btn-chat-sbs-q6.nais.oera-q.local
+    - https://tjenester-q6.nav.no/btn-chat-sbs
+  replicas:
+    min: 2
+    max: 2
+    cpuThresholdPercentage: 90
+  env:
+    - name: APPRES_CMS_URL
+      value: "{{ appresurl }}"
+    - name: AAD_B2C_CLIENTID_USERNAME
+      value: "0090b6e1-ffcc-4c37-bc21-049f7d1f0fe5"
+    - name: LOGINSERVICE_URL
+      value: "https://loginservice-q.nav.no/login"
+    - name: AAD_B2C_DISCOVERY_URL
+      value: "https://login.microsoftonline.com/NAVtestB2C.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1A_idporten_ver1"
+    - name: KAFKA_BROKERS_URL
+      value: "b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443"
+    - name: ENABLED_KAFKA
+      value: "false"

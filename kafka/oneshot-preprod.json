@@ -3,6 +3,10 @@
     {
       "topicName": "privat-btn-chat-ws",
       "numPartitions": 3,
+      "configEntries": {
+        "retention.ms": 604800000,
+        "delete.retention.ms": 86400000
+      },
       "members": [
         {
           "member": "srvbtn-chat",

@@ -16,7 +16,7 @@ services:
   fss:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile-compose
       network: host
       args:
         APPNAMEPATH: btn-chat-fss
@@ -27,7 +27,7 @@ services:
   sbs:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile-compose
       network: host
       args:
         APPNAMEPATH: btn-chat-sbs

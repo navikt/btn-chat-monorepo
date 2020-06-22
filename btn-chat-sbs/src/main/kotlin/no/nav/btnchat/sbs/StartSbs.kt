@@ -17,14 +17,20 @@ import no.nav.btnchat.common.infrastructure.standardAppSetup
 import org.slf4j.LoggerFactory
 
 val logger = LoggerFactory.getLogger("btn-chat.btn-sbs")
-val bootstrapServers = System.getenv("KAFKA_BOOTSTRAP_SERVERS") ?: "localhost:9092"
+object config {
+    val enabledKafka = (System.getenv("ENABLED_KAFKA") ?: "true").toBoolean()
+    val bootstrapServers = System.getenv("KAFKA_BOOTSTRAP_SERVERS") ?: "localhost:9092"
+}
+
 fun main() {
     HttpServer.create("btn-chat-sbs", 7076) { state ->
         standardAppSetup(state, AuthConfig.UseMock("12345678910"))
-        chatModule(
-                state = state,
-                bootstrapServers = bootstrapServers
-        )
+        if (config.enabledKafka) {
+            chatModule(
+                    state = state,
+                    bootstrapServers = config.bootstrapServers
+            )
+        }
 
         routing {
             route(state.appname) {

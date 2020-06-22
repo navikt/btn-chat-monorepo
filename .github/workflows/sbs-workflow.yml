@@ -54,4 +54,4 @@ jobs:
           PRINT_PAYLOAD: true
           CLUSTER: dev-sbs
           RESOURCE: .nais/sbs-preprod.yaml
-
+          DRY_RUN: true

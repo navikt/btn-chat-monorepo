@@ -53,5 +53,5 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           PRINT_PAYLOAD: true
           CLUSTER: dev-sbs
-          RESOURCE: .nais/sbs-preprod.yaml
+          RESOURCE: .nais/sbs-preprod.yml
           DRY_RUN: true

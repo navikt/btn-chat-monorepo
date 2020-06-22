@@ -53,6 +53,6 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           PRINT_PAYLOAD: true
           CLUSTER: dev-fss
-          RESOURCE: .nais/fss-preprod.yaml
+          RESOURCE: .nais/fss-preprod.yml
           DRY_RUN: true
 

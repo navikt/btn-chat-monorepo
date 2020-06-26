@@ -14,7 +14,6 @@ import no.nav.btnchat.common.infrastructure.AuthConfig
 import no.nav.btnchat.common.infrastructure.HttpServer
 import no.nav.btnchat.common.infrastructure.standardAppSetup
 import org.slf4j.LoggerFactory
-import java.io.File
 
 val logger = LoggerFactory.getLogger("btn-chat.btn-fss")
 

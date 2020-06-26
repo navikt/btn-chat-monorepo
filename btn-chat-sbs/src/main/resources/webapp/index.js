@@ -69,7 +69,8 @@ function joinRoom(room) {
         ws.close();
     }
     const location = document.location;
-    ws = new WebSocket(`ws://${location.host}${location.pathname}/api/chat/${room}`);
+    const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
+    ws = new WebSocket(`${protocol}://${location.host}${location.pathname}/api/chat/${room}`);
     ws.addEventListener('open', function () {
         textarea.value += `Joined ${room}\n`;
         currentRoom = room;

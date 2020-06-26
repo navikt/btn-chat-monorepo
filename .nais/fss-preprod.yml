@@ -38,12 +38,17 @@ spec:
     min: 2
     max: 2
     cpuThresholdPercentage: 90
+  vault:
+    enabled: true
+    paths:
+      - kvPath: /serviceuser/data/prod/btn-chat-fss
+        mountPath: /var/run/secrets/nais.io/service_user
   env:
     - name: ISSO_JWKS_URL
       value: "https://isso-q.adeo.no/isso/oauth2/connect/jwk_uri"
     - name: ISSO_ISSUER
       value: "https://isso-q.adeo.no:443/isso/oauth2"
-    - name: KAFKA_BROKERS_URL
+    - name: KAFKA_BOOTSTRAP_SERVERS
       value: "b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443"
     - name: ENABLED_KAFKA
       value: "false"

@@ -14,12 +14,17 @@ import no.nav.btnchat.common.infrastructure.AuthConfig
 import no.nav.btnchat.common.infrastructure.HttpServer
 import no.nav.btnchat.common.infrastructure.standardAppSetup
 import org.slf4j.LoggerFactory
+import java.io.File
 
 val logger = LoggerFactory.getLogger("btn-chat.btn-fss")
+fun readFileAsText(fileName: String) = File(fileName).readText(Charsets.UTF_8)
+        .also { logger.info("Rest file: $fileName Length: ${it.length}") }
 
 object config {
     val enabledKafka = (System.getenv("ENABLED_KAFKA") ?: "true").toBoolean()
     val bootstrapServers = System.getenv("KAFKA_BOOTSTRAP_SERVERS") ?: "localhost:9092"
+    val serviceuserUsername = readFileAsText("/var/run/secrets/nais.io/serviceuser/username")
+    val serviceuserPassword = readFileAsText("/var/run/secrets/nais.io/serviceuser/password")
 }
 
 fun main() {

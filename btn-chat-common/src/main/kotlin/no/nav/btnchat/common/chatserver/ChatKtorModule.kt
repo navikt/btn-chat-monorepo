@@ -18,17 +18,31 @@ import no.nav.btnchat.common.infrastructure.ApplicationState
 import no.nav.btnchat.common.utils.*
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.clients.producer.KafkaProducer
+import java.io.File
 import java.time.Duration
 import java.util.*
 
+fun readFileAsText(fileName: String) = File(fileName).readText(Charsets.UTF_8)
+        .also { logger.info("Rest file: $fileName Length: ${it.length}") }
+
 fun Application.chatModule(state: ApplicationState, bootstrapServers: String) {
+    val credentials: KafkaCredential? = try {
+        val serviceuserUsername = readFileAsText("/var/run/secrets/nais.io/serviceuser/username")
+        val serviceuserPassword = readFileAsText("/var/run/secrets/nais.io/serviceuser/password")
+        KafkaCredential(serviceuserUsername, serviceuserPassword)
+    } catch (e: Exception) {
+        logger.error("Could not create kafka-credentials", e)
+        null
+    }
+
     install(WebSockets) {
         pingPeriod = Duration.ofSeconds(60)
     }
 
     val producer = KafkaProducer<UUID, KafkaChatMessage>(KafkaUtils.producerConfig(
             clientId = "${state.appname}-producer",
-            bootstrapServers = bootstrapServers
+            bootstrapServers = bootstrapServers,
+            credentials = credentials
     ))
     val chatserver = ChatServer(producer)
 
@@ -36,7 +50,8 @@ fun Application.chatModule(state: ApplicationState, bootstrapServers: String) {
         val consumer = KafkaConsumer<UUID, KafkaChatMessage>(KafkaUtils.consumerConfig(
                 groupId = UUID.randomUUID().toString(),
                 clientId = "${state.appname}-consumer",
-                bootstrapServers = bootstrapServers
+                bootstrapServers = bootstrapServers,
+                credentials = credentials
         ))
 
         consumer.consumeFrom(KafkaUtils.chatTopic) { (_, value) -> chatserver.process(value) }

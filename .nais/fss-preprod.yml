@@ -42,7 +42,7 @@ spec:
     enabled: true
     paths:
       - kvPath: /serviceuser/data/prod/btn-chat-fss
-        mountPath: /var/run/secrets/nais.io/service_user
+        mountPath: /var/run/secrets/nais.io/serviceuser
   env:
     - name: ISSO_JWKS_URL
       value: "https://isso-q.adeo.no/isso/oauth2/connect/jwk_uri"

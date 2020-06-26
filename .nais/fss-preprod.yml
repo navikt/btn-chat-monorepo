@@ -30,7 +30,7 @@ spec:
       cpu: 2000m
       memory: 512Mi
   ingresses:
-    - https://btn-chat-fss.nais.preprod.local
+    - https://btn-chat-fss.dev-fss.nais.io/btn-chat-fss
     - https://app-q0.adeo.no/btn-chat-fss
     - https://app-q1.adeo.no/btn-chat-fss
     - https://app-q6.adeo.no/btn-chat-fss

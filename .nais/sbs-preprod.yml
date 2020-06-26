@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: btn-chat-sbs
+  name: btn-chat
   namespace: default
   labels:
     team: personoversikt
@@ -30,14 +30,14 @@ spec:
       cpu: 2000m
       memory: 512Mi
   ingresses:
-    - https://btn-chat-sbs-q.nav.no
-    - https://btn-chat-sbs-q0.nais.oera-q.local
+    - https://btn-chat-sbs-q.nav.no/btn-chat-sbs
+    - https://btn-chat-sbs-q0.dev-sbs.nais.io/btn-chat-sbs
     - https://tjenester-q0.nav.no/btn-chat-sbs
-    - https://btn-chat-sbs-q1.nav.no
-    - https://btn-chat-sbs-q1.nais.oera-q.local
+    - https://btn-chat-sbs-q1.nav.no/btn-chat-sbs
+    - https://btn-chat-sbs-q1.dev-sbs.nais.io/btn-chat-sbs
     - https://tjenester-q1.nav.no/btn-chat-sbs
-    - https://btn-chat-sbs-q6.nav.no
-    - https://btn-chat-sbs-q6.nais.oera-q.local
+    - https://btn-chat-sbs-q6.nav.no/btn-chat-sbs
+    - https://btn-chat-sbs-q6.dev-sbs.nais.io/btn-chat-sbs
     - https://tjenester-q6.nav.no/btn-chat-sbs
   replicas:
     min: 2

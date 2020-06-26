@@ -11,6 +11,7 @@ on:
       - 'LICENSE'
       - 'CODEOWNERS'
       - 'kafka/**'
+      - '.nais/sbs*'
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/btn-chat-fss:${{ github.sha }}

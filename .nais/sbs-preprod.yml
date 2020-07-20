@@ -8,7 +8,6 @@ metadata:
 spec:
   image: {{image}}
   port: 7076
-  team: personoversikt
   liveness:
     path: /btn-chat-sbs/internal/isAlive
     initialDelay: 20

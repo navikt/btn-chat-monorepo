@@ -41,6 +41,7 @@ dependencies {
 //    implementation("org.flywaydb:flyway-core:6.3.1")
 //    implementation("com.github.seratch:kotliquery:1.3.0")
 //    implementation("com.natpryce:konfig:$konfigVersion")
+    implementation("dev.nohus:AutoKonfig:1.0.0")
     implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
     implementation(project(":btn-chat-common"))
 

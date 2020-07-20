@@ -12,6 +12,10 @@ import io.ktor.auth.Principal
 import io.ktor.auth.jwt.JWTCredential
 import io.ktor.auth.jwt.jwt
 import io.ktor.http.auth.HttpAuthHeader
+import no.nav.btnchat.common.ActorId
+import no.nav.btnchat.common.Anonymous
+import no.nav.btnchat.common.Fnr
+import no.nav.btnchat.common.UserActorType
 import org.slf4j.LoggerFactory
 import java.net.URL
 import java.util.*
@@ -34,6 +38,7 @@ fun Authentication.Configuration.setupJWT(jwksUrl: String) {
 }
 
 object Security {
+    private const val invalidJWT = "Invalid JWT"
     private const val cookieName = "ID_token"
 
     fun getSubject(call: ApplicationCall): String {
@@ -41,9 +46,31 @@ object Security {
             useJwtFromCookie(call)
                     ?.getBlob()
                     ?.let { blob -> JWT.decode(blob).parsePayload().subject }
-                    ?: "Unauthenticated"
+                    ?: "Anonymous"
         } catch (e: Throwable) {
-            "Invalid JWT"
+            invalidJWT
+        }
+    }
+
+    fun getActorId(call: ApplicationCall): ActorId {
+        return try {
+            when(val subject = getSubject(call)) {
+                invalidJWT -> Anonymous()
+                else -> ActorId.fromString(subject)
+            }
+        } catch (e: Throwable) {
+            Anonymous()
+        }
+    }
+
+    fun getUserActorType(call: ApplicationCall): UserActorType {
+        return try {
+            when(val subject = getSubject(call)) {
+                invalidJWT -> Anonymous()
+                else -> UserActorType.fromString(subject)
+            }
+        } catch (e: Throwable) {
+            Anonymous()
         }
     }
 

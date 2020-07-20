@@ -12,3 +12,11 @@ inline fun Timer.schedule(delay: Duration, period: Duration, crossinline action:
 }
 
 val Int.minutes get() = Duration.of(this.toLong(), ChronoUnit.MINUTES)
+
+fun String.toUUID(): UUID {
+    return try {
+        UUID.fromString(this)
+    } catch (exception: IllegalArgumentException) {
+        UUID.nameUUIDFromBytes(this.toByteArray())
+    }
+}

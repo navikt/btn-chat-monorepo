@@ -20,10 +20,17 @@ import io.ktor.server.engine.addShutdownHook
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.prometheus.client.dropwizard.DropwizardExports
+import no.nav.btnchat.common.Origin
 import no.nav.btnchat.common.utils.JacksonUtils
 import org.slf4j.event.Level
 
-data class ApplicationState(val appname: String, val port: Int, var running: Boolean = true, var initialized: Boolean = false) {
+data class ApplicationState(
+        val appname: String,
+        val port: Int,
+        val origin: Origin,
+        var running: Boolean = true,
+        var initialized: Boolean = false
+) {
     fun start() {
         initialized = true
     }
@@ -34,8 +41,8 @@ data class ApplicationState(val appname: String, val port: Int, var running: Boo
 }
 
 object HttpServer {
-    fun create(appname: String, port: Int, config: Application.(state: ApplicationState) -> Unit): ApplicationEngine {
-        val applicationState = ApplicationState(appname, port)
+    fun create(appname: String, port: Int, origin: Origin, config: Application.(state: ApplicationState) -> Unit): ApplicationEngine {
+        val applicationState = ApplicationState(appname, port, origin)
 
         val applicationServer = embeddedServer(Netty, port) {
             config(this, applicationState)

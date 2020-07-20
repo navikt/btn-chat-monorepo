@@ -3,6 +3,7 @@ package no.nav.btnchat.common.utils
 import com.fasterxml.jackson.module.kotlin.readValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import no.nav.btnchat.common.KafkaMessage
 import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.ConsumerRecord
@@ -25,17 +26,6 @@ data class KafkaCredential(val username: String, val password: String) {
         return "username '$username' password '*******'"
     }
 }
-
-enum class KafkaChatMessageType {
-    REQUESTED, JOINED, LEFT, MESSAGE, FORCE_END, DESERIALIZER_ERROR
-}
-data class KafkaChatMessage(
-        val timestamp: Long,
-        val chatId: String,
-        val ident: String,
-        val type: KafkaChatMessageType,
-        val content: String? = null
-)
 
 private val defaultProducerConfig = Properties().apply {
     put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, UUIDSerializer::class.java)
@@ -108,14 +98,14 @@ object KafkaUtils {
 
 }
 
-class JacksonSerializer : Serializer<KafkaChatMessage> {
-    override fun serialize(topic: String?, data: KafkaChatMessage?): ByteArray {
+class JacksonSerializer : Serializer<KafkaMessage> {
+    override fun serialize(topic: String?, data: KafkaMessage?): ByteArray {
         return objectmapper.writeValueAsBytes(data)
     }
 }
 
-class JacksonDeserializer : Deserializer<KafkaChatMessage?> {
-    override fun deserialize(topic: String?, data: ByteArray?): KafkaChatMessage? {
+class JacksonDeserializer : Deserializer<KafkaMessage?> {
+    override fun deserialize(topic: String?, data: ByteArray?): KafkaMessage? {
         return try {
             data?.let(objectmapper::readValue)
         } catch (e: Throwable) {

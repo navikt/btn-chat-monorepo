@@ -37,6 +37,7 @@ dependencies {
     implementation("io.prometheus:simpleclient_dropwizard:$prometheusVersion")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
+    implementation("dev.nohus:AutoKonfig:1.0.0")
 //    implementation("no.nav:vault-jdbc:1.3.1")
 //    implementation("org.flywaydb:flyway-core:6.3.1")
 //    implementation("com.github.seratch:kotliquery:1.3.0")

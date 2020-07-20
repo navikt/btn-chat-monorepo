@@ -8,7 +8,6 @@ metadata:
 spec:
   image: {{image}}
   port: 7075
-  team: personoversikt
   liveness:
     path: /btn-chat-fss/internal/isAlive
     initialDelay: 20

@@ -9,10 +9,19 @@ services:
       - 9581-9585:9581-9585
       - 9092:9092
     environment:
-      ADV_HOST: kafka
+      ADV_HOST: localhost
       SAMPLEDATA: 0
       RUNNING_SAMPLEDATA: 0
       RUNTESTS: 0
+  postgres:
+    build:
+      context: .
+      dockerfile: Dockerfile-postgres
+    ports:
+      - 7050:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
   fss:
     build:
       context: .

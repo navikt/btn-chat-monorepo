@@ -52,11 +52,10 @@ let ws = null;
 let currentRoom = null;
 
 function processWSMessage(wsMessage) {
-    console.log('process')
-    switch (wsMessage.type) {
-        case 'JOINED': return `${wsMessage.ident} joined chatroom.`;
-        case 'LEFT': return `${wsMessage.ident} left chatroom.`;
-        case 'MESSAGE': return `${wsMessage.ident}: ${wsMessage.content}`;
+    switch (wsMessage.eventType) {
+        case 'CONNECTED': return `${wsMessage.actorId.value} joined chatroom.`;
+        case 'DISCONNECTED': return `${wsMessage.actorId.value} left chatroom.`;
+        case 'MESSAGE': return `${wsMessage.actorId.value}: ${wsMessage.eventData}`;
     }
     return null;
 }
@@ -102,6 +101,6 @@ function sendMessage(text) {
     }
 
     console.log('sending', text);
-    ws.send(text);
+    ws.send(JSON.stringify({ eventType: 'MESSAGE', content: text }));
     message.value = '';
 }

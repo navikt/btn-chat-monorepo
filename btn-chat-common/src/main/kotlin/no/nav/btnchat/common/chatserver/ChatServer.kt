@@ -14,15 +14,22 @@ import java.util.*
 
 val logger = LoggerFactory.getLogger("btn-chat.ChatServer")
 
-class ChatServer(private val producer: KafkaProducer<UUID, KafkaMessage>, private val origin: Origin) {
+class ChatServer(
+        private val producer: KafkaProducer<UUID, KafkaMessage>,
+        private val chatDao: ChatDAO,
+        private val origin: Origin
+) {
     private val sessions = mutableMapOf<UUID, MutableList<WebSocketServerSession>>()
-    private val chat = mutableMapOf<UUID, MutableList<KafkaDataMessage>>()
 
-    suspend fun connected(actorId: ActorId, chatId: UUID, session: DefaultWebSocketServerSession) {
+    suspend fun onConnect(actorId: ActorId, chatId: UUID, session: DefaultWebSocketServerSession) {
+        val time = LocalDateTime.now()
+        val messageId = UUID.randomUUID()
+        val chat = chatDao.getChatData(chatId)
+        chatDao.saveChatMessage(actorId, chatId, messageId, time, WSMessage(DataEventType.CONNECTED))
         kafkaSend(KafkaDataMessage(
                 chatId = chatId,
-                time = LocalDateTime.now(),
-                messageId = UUID.randomUUID(),
+                time = time,
+                messageId = messageId,
                 origin = origin,
                 actorId = actorId,
                 eventType = DataEventType.CONNECTED
@@ -32,18 +39,20 @@ class ChatServer(private val producer: KafkaProducer<UUID, KafkaMessage>, privat
         sessions[chatId]!!.add(session)
 
         logger.info("[ChatServer::joined] $actorId $chatId")
-
-        logger.info("[ChatServer::resending] $chatId ${chat[chatId]?.size ?: 0}")
-        chat[chatId]?.forEach {
+        logger.info("[ChatServer::resending] $chatId ${chat.messages.size}")
+        chat.messages.forEach {
             session.outgoing.send(Frame.Text(it.toJson()))
         }
     }
 
-    suspend fun disconnected(actorId: ActorId, chatId: UUID, session: DefaultWebSocketServerSession) {
+    suspend fun onDisconnect(actorId: ActorId, chatId: UUID, session: DefaultWebSocketServerSession) {
+        val time = LocalDateTime.now()
+        val messageId = UUID.randomUUID()
+        chatDao.saveChatMessage(actorId, chatId, messageId, time, WSMessage(DataEventType.DISCONNECTED))
         kafkaSend(KafkaDataMessage(
                 chatId = chatId,
-                time = LocalDateTime.now(),
-                messageId = UUID.randomUUID(),
+                time = time,
+                messageId = messageId,
                 origin = origin,
                 actorId = actorId,
                 eventType = DataEventType.DISCONNECTED
@@ -60,8 +69,6 @@ class ChatServer(private val producer: KafkaProducer<UUID, KafkaMessage>, privat
                         it.outgoing.send(Frame.Text(kafkaMessage.toJson()))
                     }
 
-            chat.putIfAbsent(kafkaMessage.chatId, mutableListOf())
-            chat[kafkaMessage.chatId]?.add(kafkaMessage)
             logger.info("[ChatServer::process] ${kafkaMessage.toJson()}")
         }
     }
@@ -78,17 +85,20 @@ class ChatServer(private val producer: KafkaProducer<UUID, KafkaMessage>, privat
         kafkaSend(KafkaChatCloseMessage(chatId, time))
     }
 
-    suspend fun sendMessage(actorId: ActorId, chatId: UUID, messageId: UUID, time: LocalDateTime, wsMessage: WSMessage) {
-        val message = KafkaDataMessage(
+    suspend fun onMessage(actorId: ActorId, chatId: UUID, wsMessage: WSMessage) {
+        val time = LocalDateTime.now()
+        val messageId = UUID.randomUUID()
+
+        chatDao.saveChatMessage(actorId, chatId, messageId, time, wsMessage)
+        kafkaSend(KafkaDataMessage(
                 chatId = chatId,
                 time = time,
                 messageId = messageId,
                 origin = origin,
                 actorId = actorId,
-                eventType = wsMessage.eventType.toDataEventType(),
+                eventType = wsMessage.eventType,
                 eventData = wsMessage.content
-        )
-        kafkaSend(message)
+        ))
     }
 
 

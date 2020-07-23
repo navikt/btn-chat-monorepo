@@ -67,14 +67,6 @@ enum class DataEventType {
     CONNECTED, DISCONNECTED, MESSAGE
 }
 
-enum class WSEventType {
-    MESSAGE;
-
-    fun toDataEventType(): DataEventType = when(this) {
-        MESSAGE -> DataEventType.MESSAGE
-    }
-}
-
 enum class ChatContext {
     ARBD, FMLI, HJLPM, PENS, OVRG
 }
@@ -128,7 +120,7 @@ data class KafkaDataMessage(
 
 
 data class WSMessage(
-        val eventType: WSEventType,
+        val eventType: DataEventType,
         val content: String? = null
 )
 

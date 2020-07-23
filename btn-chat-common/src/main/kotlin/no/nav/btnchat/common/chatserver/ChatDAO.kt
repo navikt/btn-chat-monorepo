@@ -12,6 +12,31 @@ import java.time.LocalDateTime
 import java.util.*
 import javax.sql.DataSource
 
+data class ChatDataMessageCTO(
+        val messageId: UUID,
+        val time: LocalDateTime,
+        val origin: Origin,
+        val actorId: ActorId,
+        val eventType: DataEventType,
+        val eventData: String?
+) {
+    companion object {
+        fun fromRow(row: Row) = ChatDataMessageCTO(
+                messageId = UUID.fromString(row.string("messageId")),
+                time = row.localDateTime("time"),
+                origin = Origin.valueOf(row.string("origin")),
+                actorId = ActorId.fromString(row.string("actorId")),
+                eventType = DataEventType.valueOf(row.string("eventType")),
+                eventData = row.stringOrNull("eventData")
+        )
+    }
+}
+
+data class ChatDataDTO(
+        val chatId: UUID,
+        val messages: List<ChatDataMessageCTO>
+)
+
 data class ChatDTO(
         val chatId: UUID,
         val requestTime: LocalDateTime,
@@ -133,16 +158,28 @@ class ChatDAO(private val dataSource: DataSource, private val origin: Origin) {
         }
     }
 
+    suspend fun getChatData(chatId: UUID): ChatDataDTO {
+        return transactional(dataSource) { tx -> getChatData(tx, chatId) }
+    }
+
     private fun getChat(tx: TransactionalSession, chatId: UUID, selectForUpdate: Boolean = false): ChatDTO? {
-        var query = "SELECT * FROM chat where chatId = ?"
+        var query = "SELECT * FROM chat WHERE chatId = ?"
         if (selectForUpdate) {
             query += " FOR UPDATE"
         }
 
-        return queryOf("SELECT * FROM chat where chatId = ?", chatId.toString())
+        return queryOf("SELECT * FROM chat WHERE chatId = ?", chatId.toString())
                 .map(ChatDTO.Companion::fromRow)
                 .asSingle
                 .execute(tx)
+    }
+
+    private fun getChatData(tx: TransactionalSession, chatId: UUID): ChatDataDTO {
+        return queryOf("SELECT * FROM chatdata WHERE chatId = ?", chatId.toString())
+                .map(ChatDataMessageCTO.Companion::fromRow)
+                .asList
+                .execute(tx)
+                .let { ChatDataDTO(chatId, it) }
     }
 
     suspend fun saveChatMessage(actorId: ActorId, chatId: UUID, messageId: UUID, time: LocalDateTime, wsMessage: WSMessage) {
